@@ -37,6 +37,29 @@ def create_text(window, message, size):
 
     return text
 
+def button_click(button: ctk):
+    button.configure(fg_color= "#AFAFAF")
+
+def create_button(frame):
+    button = ctk.CTkButton(
+        frame,
+        text="",
+        width=70,
+        height=70,
+        border_width=3,
+        fg_color="white",
+        hover_color="#C6C6C6",
+        command=lambda:button_click(button)
+    )
+
+    return button
+
+def create_button_array(frame, number):
+    for i in range(number):
+        for j in range(number):
+            button = create_button(frame)
+            button.grid(row=i, column=j)
+
 def tic_tac_toe_interface():
     window = create_window()
     window.title("Jogo da Velha")
@@ -55,6 +78,8 @@ def tic_tac_toe_interface():
         rely=0.5,
         anchor="center"
     )
+
+    create_button_array(frame, 3)
 
     window.mainloop()
 
