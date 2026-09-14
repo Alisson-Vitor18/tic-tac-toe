@@ -43,24 +43,33 @@ def button_click(
         state,
         row, 
         column,
-        board
+        board,
+        turn_message
     ):
 
     if game.valid_move(board, row, column):
         button.configure(fg_color= "#E4E4E4")
         
-        if state["X"]:
+        if state["turn"] == "X":
             button.configure(text="X")
             board[row][column] = "X"
+            state["turn"] = "O"
         else: 
             button.configure(text="O")
             board[row][column] = "O"
-        
-        state["X"] = not state["X"]
+            state["turn"] = "X"
+        turn_message.configure(text=f"Vez de jogador {state['turn']}")
+
     else:
         print("Essa casa já foi escolhida!")
 
-def create_button(frame, state, row, column, board):
+def create_button(frame, 
+                  state, 
+                  row, 
+                  column, 
+                  board, 
+                  turn_message
+                ):
     font = ctk.CTkFont(
         family="Segoe UI Variable Display",
         size=30,
@@ -82,16 +91,29 @@ def create_button(frame, state, row, column, board):
                                     state = state, 
                                     row = row,
                                     column = column,
-                                    board = board
+                                    board = board,
+                                    turn_message = turn_message
                                     )
     )
 
     return button
 
-def create_button_array(frame, number, state, buttons, board):
+def create_button_array(frame,
+                        number, 
+                        state, 
+                        buttons, 
+                        board, 
+                        turn_message 
+                    ):
     for i in range(number):
         for j in range(number):
-            button = create_button(frame, state, i, j, board)
+            button = create_button(frame, 
+                                   state, 
+                                   i, 
+                                   j, 
+                                   board,
+                                   turn_message
+                                )
             button.grid(row=i, column=j)
             buttons[i][j] = button
 
@@ -129,11 +151,11 @@ def tic_tac_toe_interface():
         anchor="center"
     )
 
-    state = {"X": True}
+    state = {"turn": "X"}
 
     buttons, board = utility()
 
-    create_button_array(frame, 3, state, buttons, board)
+    create_button_array(frame, 3, state, buttons, board, turn_message )
 
     window.mainloop()
 
