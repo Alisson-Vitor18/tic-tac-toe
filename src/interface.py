@@ -41,6 +41,21 @@ def tic_tac_toe_interface():
     window = create_window()
     window.title("Jogo da Velha")
 
+    title_game = create_text(window, "Jogo da Velha", 40)
+    title_game.pack(pady=30)
+
+    turn_message = create_text(window, "Vez de jogador X", 28)
+    turn_message.pack()
+
+    frame = ctk.CTkFrame(
+        window
+    )
+    frame.place(
+        relx=0.5,
+        rely=0.5,
+        anchor="center"
+    )
+
     window.mainloop()
 
 tic_tac_toe_interface()
