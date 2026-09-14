@@ -130,7 +130,9 @@ def utility():
         ["", "", ""],
     ]
 
-    return buttons, board
+    state = {"turn": "X"}
+
+    return buttons, board, state
 
 def tic_tac_toe_interface():
     window = create_window()
@@ -151,9 +153,7 @@ def tic_tac_toe_interface():
         anchor="center"
     )
 
-    state = {"turn": "X"}
-
-    buttons, board = utility()
+    buttons, board , state = utility()
 
     create_button_array(frame, 3, state, buttons, board, turn_message )
 
