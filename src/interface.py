@@ -39,14 +39,17 @@ def create_text(window, message, size):
     return text
 
 def button_click(
-        button: ctk, 
+        button,
         state,
         row, 
         column,
         board,
         turn_message
     ):
-
+    if game.full_board(board):
+        print("Tabuleiro Cheio!")
+        return
+    
     if game.valid_move(board, row, column):
         button.configure(fg_color= "#E4E4E4")
         
