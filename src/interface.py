@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import game
 
 def center_window(window, width, height):
     screen_width = window.winfo_screenwidth()
@@ -37,28 +38,77 @@ def create_text(window, message, size):
 
     return text
 
-def button_click(button: ctk):
-    button.configure(fg_color= "#AFAFAF")
+def button_click(
+        button: ctk, 
+        state,
+        row, 
+        column,
+        board
+    ):
 
-def create_button(frame):
+    if game.valid_move(board, row, column):
+        button.configure(fg_color= "#E4E4E4")
+        
+        if state["X"]:
+            button.configure(text="X")
+            board[row][column] = "X"
+        else: 
+            button.configure(text="O")
+            board[row][column] = "O"
+        
+        state["X"] = not state["X"]
+    else:
+        print("Essa casa já foi escolhida!")
+
+def create_button(frame, state, row, column, board):
+    font = ctk.CTkFont(
+        family="Segoe UI Variable Display",
+        size=30,
+        weight="bold"
+    )
+
     button = ctk.CTkButton(
         frame,
         text="",
+        font=font,
+        text_color="#060606",
         width=70,
         height=70,
         border_width=3,
+        border_color="#060606",
         fg_color="white",
-        hover_color="#C6C6C6",
-        command=lambda:button_click(button)
+        hover_color="#ECECEC",
+        command=lambda:button_click(button, 
+                                    state = state, 
+                                    row = row,
+                                    column = column,
+                                    board = board
+                                    )
     )
 
     return button
 
-def create_button_array(frame, number):
+def create_button_array(frame, number, state, buttons, board):
     for i in range(number):
         for j in range(number):
-            button = create_button(frame)
+            button = create_button(frame, state, i, j, board)
             button.grid(row=i, column=j)
+            buttons[i][j] = button
+
+def utility():
+    buttons = [
+        [None,None, None],
+        [None,None, None],
+        [None,None, None],
+    ]
+
+    board = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+    ]
+
+    return buttons, board
 
 def tic_tac_toe_interface():
     window = create_window()
@@ -79,7 +129,11 @@ def tic_tac_toe_interface():
         anchor="center"
     )
 
-    create_button_array(frame, 3)
+    state = {"X": True}
+
+    buttons, board = utility()
+
+    create_button_array(frame, 3, state, buttons, board)
 
     window.mainloop()
 
