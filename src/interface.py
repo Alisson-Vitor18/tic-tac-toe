@@ -44,34 +44,44 @@ def button_click(
         row, 
         column,
         board,
-        turn_message
+        turn_message,
+        buttons,
+        end_game
     ):
+    if end_game["end"]:
+        return
 
     if game.valid_move(board, row, column):
-        button.configure(fg_color= "#E4E4E4")
-        
-        if state["turn"] == "X":
-            button.configure(text="X")
-            board[row][column] = "X"
-            state["turn"] = "O"
-        else: 
-            button.configure(text="O")
-            board[row][column] = "O"
-            state["turn"] = "X"
+        button.configure(
+            fg_color= "#E4E4E4",
+            text = state["turn"]
+            )
 
-        result = game.check_win(board)
+        board[row][column] = state["turn"]
+
+        result, winning_cells = game.check_win(board)
 
         if result is not None:
             print(f"Fim de jogo. jogador {result} venceu!")
             turn_message.configure(text=f"Jogador {result} venceu!")
+            for row, column in winning_cells:
+                buttons[row][column].configure(
+                    fg_color="#B0CEB1",
+                    hover_color="#C6E0C7"
+                )
+            end_game["end"] = True
             return
 
         if game.full_board(board):
             print("Fim de jogo. Empate!")
             turn_message.configure(text=f"Empate!")
+            end_game["end"] = True
             return
         
-        turn_message.configure(text=f"Vez de jogador {state['turn']}")
+        game.swap_turns(state)
+        turn_message.configure(
+            text=f"Vez de jogador {state['turn']}"
+        )
 
     else:
         print("Essa casa já foi escolhida!")
@@ -81,7 +91,9 @@ def create_button(frame,
                   row, 
                   column, 
                   board, 
-                  turn_message
+                  turn_message,
+                  buttons,
+                  end_game
                 ):
     font = ctk.CTkFont(
         family="Segoe UI Variable Display",
@@ -105,7 +117,9 @@ def create_button(frame,
                                     row = row,
                                     column = column,
                                     board = board,
-                                    turn_message = turn_message
+                                    turn_message = turn_message,
+                                    buttons = buttons,
+                                    end_game = end_game
                                     )
     )
 
@@ -116,7 +130,8 @@ def create_button_array(frame,
                         state, 
                         buttons, 
                         board, 
-                        turn_message 
+                        turn_message,
+                        end_game
                     ):
     for i in range(number):
         for j in range(number):
@@ -125,12 +140,14 @@ def create_button_array(frame,
                                    i, 
                                    j, 
                                    board,
-                                   turn_message
+                                   turn_message,
+                                   buttons,
+                                   end_game
                                 )
             button.grid(row=i, column=j)
             buttons[i][j] = button
 
-def utility():
+def create_game_state():
     buttons = [
         [None,None, None],
         [None,None, None],
@@ -144,8 +161,9 @@ def utility():
     ]
 
     state = {"turn": "X"}
+    end_game = {"end": False}
 
-    return buttons, board, state
+    return buttons, board, state, end_game
 
 def tic_tac_toe_interface():
     window = create_window()
@@ -166,9 +184,16 @@ def tic_tac_toe_interface():
         anchor="center"
     )
 
-    buttons, board , state = utility()
+    buttons, board , state, end_game = create_game_state()
 
-    create_button_array(frame, 3, state, buttons, board, turn_message )
+    create_button_array(frame, 
+                        3, 
+                        state, 
+                        buttons, 
+                        board, 
+                        turn_message, 
+                        end_game
+                    )
 
     window.mainloop()
 
