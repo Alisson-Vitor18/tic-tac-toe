@@ -46,10 +46,7 @@ def button_click(
         board,
         turn_message
     ):
-    if game.full_board(board):
-        print("Tabuleiro Cheio!")
-        return
-    
+
     if game.valid_move(board, row, column):
         button.configure(fg_color= "#E4E4E4")
         
@@ -61,6 +58,19 @@ def button_click(
             button.configure(text="O")
             board[row][column] = "O"
             state["turn"] = "X"
+
+        result = game.check_win(board)
+
+        if result is not None:
+            print(f"Fim de jogo. jogador {result} venceu!")
+            turn_message.configure(text=f"Jogador {result} venceu!")
+            return
+
+        if game.full_board(board):
+            print("Fim de jogo. Empate!")
+            turn_message.configure(text=f"Empate!")
+            return
+        
         turn_message.configure(text=f"Vez de jogador {state['turn']}")
 
     else:
