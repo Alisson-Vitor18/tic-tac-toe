@@ -65,6 +65,7 @@ def restart_game(
     end_game["end"] = False
         
     turn_message.configure(text="Vez de jogador X")
+    print("Jogo reiniciado!")
 
 def restart_button(
         frame,
@@ -126,11 +127,12 @@ def button_click(
             )
 
         board[row][column] = state["turn"]
+        print(f"Jogador {state["turn"]} escolheu a casa {(row, column)}")
 
         result, winning_cells = game.check_win(board)
 
         if result is not None:
-            print(f"Fim de jogo. jogador {result} venceu!")
+            print(f"\033[30;47mFim de jogo. jogador {result} venceu!\033[0m")
             turn_message.configure(text=f"Jogador {result} venceu!")
             for row, column in winning_cells:
                 buttons[row][column].configure(
@@ -200,7 +202,7 @@ def create_button(frame,
                                     buttons = buttons,
                                     end_game = end_game,
                                     restart=restart
-                                    )
+                                )
     )
 
     return button
