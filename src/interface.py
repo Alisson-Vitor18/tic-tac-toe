@@ -1,5 +1,20 @@
 import customtkinter as ctk
 import game
+import pygame
+from sound import SOUNDS_DIR
+
+pygame.mixer.init()
+
+click_sound = pygame.mixer.Sound(
+    SOUNDS_DIR / "click_002.ogg"
+)
+
+init_sound = pygame.mixer.Sound(
+    SOUNDS_DIR / "start.wav"
+)
+
+click_sound.set_volume(0.05)
+init_sound.set_volume(0.1)
 
 def center_window(
         window, 
@@ -54,6 +69,10 @@ def restart_game(
         end_game, 
         turn_message
     ):
+
+    click_sound.play()
+    init_sound.play()
+
     button.configure(
         state="disabled",
         fg_color="#6A6868",
@@ -129,13 +148,14 @@ def button_click(
         return
 
     if game.valid_move(board, row, column):
+        click_sound.play()
         button.configure(
             fg_color= "#E4E4E4",
             text = state["turn"]
             )
 
         board[row][column] = state["turn"]
-        print(f"Jogador {state["turn"]} escolheu a casa {(row, column)}")
+        print(f"Jogador {state['turn']} escolheu a casa {(row, column)}")
 
         result, winning_cells = game.check_win(board)
 
