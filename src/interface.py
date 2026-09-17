@@ -1,7 +1,11 @@
 import customtkinter as ctk
 import game
 
-def center_window(window, width, height):
+def center_window(
+        window, 
+        width, 
+        height
+    ):
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
 
@@ -23,7 +27,11 @@ def create_window():
 
     return window
 
-def create_text(window, message, size):
+def create_text(
+        window, 
+        message, 
+        size
+    ):
     font = ctk.CTkFont(
         family="Segoe UI Variable Display",
         size=size,
