@@ -1,6 +1,7 @@
 import customtkinter as ctk
-import game
+import game as game_logic
 import pygame
+from tic_tac_toe import TicTacToe
 from sound import SOUNDS_DIR
 
 pygame.mixer.init()
@@ -63,10 +64,7 @@ def create_text(
 
 def restart_game(
         button,
-        board, 
-        buttons, 
-        state, 
-        end_game, 
+        game, 
         turn_message
     ):
 
@@ -80,26 +78,23 @@ def restart_game(
     )
     for row in range(3):
         for column in range(3):
-            board[row][column] = ""
+            game.board[row][column] = ""
         
-            buttons[row][column].configure(
+            game.buttons[row][column].configure(
                 text="",
                 fg_color="white",
                 hover_color="#ECECEC"
             )
         
-    state["turn"] = "X"
-    end_game["end"] = False
+    game.turn = "X"
+    game.end_game = False
         
     turn_message.configure(text="Vez de jogador X")
     print("Jogo reiniciado!")
 
 def restart_button(
         frame,
-        board,
-        buttons,
-        state,
-        end_game,
+        game,
         turn_message
     ):
     font = ctk.CTkFont(
@@ -122,10 +117,7 @@ def restart_button(
         height=50,
         command=lambda:restart_game(
             button=button,
-            board=board,
-            buttons=buttons,  
-            state=state,
-            end_game=end_game,
+            game=game,
             turn_message=turn_message
         )
     )
@@ -135,39 +127,36 @@ def restart_button(
 
 def button_click(
         button,
-        state,
         row, 
         column,
-        board,
         turn_message,
-        buttons,
-        end_game,
+        game,
         restart
     ):
-    if end_game["end"]:
+    if game.end_game:
         return
 
-    if game.valid_move(board, row, column):
+    if game_logic.valid_move(game.board, row, column):
         click_sound.play()
         button.configure(
             fg_color= "#E4E4E4",
-            text = state["turn"]
+            text = game.turn
             )
 
-        board[row][column] = state["turn"]
-        print(f"Jogador {state['turn']} escolheu a casa {(row, column)}")
+        game.board[row][column] = game.turn
+        print(f"Jogador {game.turn} escolheu a casa {(row, column)}")
 
-        result, winning_cells = game.check_win(board)
+        result, winning_cells = game_logic.check_win(game.board)
 
         if result is not None:
             print(f"\033[30;47mFim de jogo. jogador {result} venceu!\033[0m")
             turn_message.configure(text=f"Jogador {result} venceu!")
             for row, column in winning_cells:
-                buttons[row][column].configure(
+                game.buttons[row][column].configure(
                     fg_color="#B0CEB1",
                     hover_color="#C6E0C7"
                 )
-            end_game["end"] = True
+            game.end_game = True
             restart.configure(
                 state="normal",
                 fg_color="#B0CEB1",
@@ -175,10 +164,10 @@ def button_click(
             )
             return
     
-        if game.full_board(board):
+        if game_logic.full_board(game.board):
             print("Fim de jogo. Empate!")
             turn_message.configure(text=f"Empate!")
-            end_game["end"] = True
+            game.end_game = True
             restart.configure(
                 state="normal",
                 fg_color="#B0CEB1",
@@ -186,22 +175,19 @@ def button_click(
             )
             return
         
-        game.swap_turns(state)
+        game.swap_turns()
         turn_message.configure(
-            text=f"Vez de jogador {state['turn']}"
+            text=f"Vez de jogador {game.turn}"
         )
 
     else:
         print("Essa casa já foi escolhida!")
 
-def create_button(frame, 
-                  state, 
+def create_button(frame,  
                   row, 
                   column, 
-                  board, 
                   turn_message,
-                  buttons,
-                  end_game,
+                  game,
                   restart
                 ):
     font = ctk.CTkFont(
@@ -222,13 +208,10 @@ def create_button(frame,
         fg_color="white",
         hover_color="#ECECEC",
         command=lambda:button_click(button, 
-                                    state = state, 
                                     row = row,
                                     column = column,
-                                    board = board,
                                     turn_message = turn_message,
-                                    buttons = buttons,
-                                    end_game = end_game,
+                                    game = game,
                                     restart=restart
                                 )
     )
@@ -237,45 +220,21 @@ def create_button(frame,
 
 def create_button_array(frame,
                         number, 
-                        state, 
-                        buttons, 
-                        board, 
+                        game,
                         turn_message,
-                        end_game,
                         restart
                     ):
     for i in range(number):
         for j in range(number):
             button = create_button(frame, 
-                                   state, 
                                    i, 
                                    j, 
-                                   board,
                                    turn_message,
-                                   buttons,
-                                   end_game,
+                                   game,
                                    restart
                                 )
             button.grid(row=i, column=j)
-            buttons[i][j] = button
-
-def create_game_state():
-    buttons = [
-        [None,None, None],
-        [None,None, None],
-        [None,None, None],
-    ]
-
-    board = [
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-    ]
-
-    state = {"turn": "X"}
-    end_game = {"end": False}
-
-    return buttons, board, state, end_game
+            game.buttons[i][j] = button
 
 def tic_tac_toe_interface():
     window = create_window()
@@ -296,8 +255,7 @@ def tic_tac_toe_interface():
         anchor="center"
     )
 
-    buttons, board , state, end_game = create_game_state()
-
+    game = TicTacToe()
     restart_frame = ctk.CTkFrame(window)
     
     restart_frame.place(
@@ -308,20 +266,14 @@ def tic_tac_toe_interface():
     
     restart = restart_button(
         restart_frame,
-        board,
-        buttons,
-        state,
-        end_game,
+        game,
         turn_message
     )
 
     create_button_array(frame, 
                         3, 
-                        state, 
-                        buttons, 
-                        board, 
+                        game, 
                         turn_message, 
-                        end_game,
                         restart
                     )
 
