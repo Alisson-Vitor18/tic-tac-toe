@@ -1,11 +1,5 @@
 class TicTacToe:
     def __init__(self):
-        self.buttons = [
-            [None,None, None],
-            [None,None, None],
-            [None,None, None],
-        ]
-
         self.board = [
             ["", "", ""],
             ["", "", ""],
