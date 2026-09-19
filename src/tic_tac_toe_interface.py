@@ -2,7 +2,6 @@ import customtkinter as ctk
 import pygame
 import game as game_logic
 from sound import SOUNDS_DIR
-
 pygame.mixer.init()
 
 click_sound = pygame.mixer.Sound(
@@ -52,6 +51,55 @@ class TicTacToeInterface:
         y = int(((screen_height - self.height) // 2) * scale)
 
         return f"{self.width}x{self.height}+{x}+{y}"
+
+    def restart_game(self, game):
+        click_sound.play()
+        init_sound.play()
+
+        self.restart_button.configure(
+            state="disabled",
+            fg_color="#6A6868",
+            hover_color="#6A6868",
+        )
+
+        for row in range(3):
+            for column in range(3):
+                game.board[row][column]=""
+                self.buttons[row][column].configure(
+                    text="",
+                    fg_color="white",
+                    hover_color="#ECECEC"
+                )
+        game.turn="X"
+        game.end_game=False
+
+        self.turn_message.configure(text="Vez de jogador X")
+        print("Jogo reiniciado")
+
+    def create_restart_button(self, game):
+        font = ctk.CTkFont(
+            family="Segoe UI Variable Display",
+            size=28,
+            weight="bold"
+        )
+
+        button = ctk.CTkButton(
+            self.restart_frame,
+            state="disabled",
+            text="Reiniciar Jogo",
+            text_color="#060606",
+            font=font,
+            border_width=3,
+            border_color="#060606",
+            fg_color="#6A6868",
+            hover_color="#6A6868",
+            width=210,
+            height=50,
+            command=lambda:self.restart_game(game=game)
+        )   
+        button.pack()
+
+        return button
 
     def button_click(self, button, row, column, game):
         if game.end_game:

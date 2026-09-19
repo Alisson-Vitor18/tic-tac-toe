@@ -21,66 +21,6 @@ def create_text(
 
     return text
 
-def restart_game(
-        game, 
-        interface
-    ):
-
-    #click_sound.play()
-    #init_sound.play()
-
-    interface.restart_button.configure(
-        state="disabled",
-        fg_color="#6A6868",
-        hover_color="#6A6868"
-    )
-    for row in range(3):
-        for column in range(3):
-            game.board[row][column] = ""
-        
-            interface.buttons[row][column].configure(
-                text="",
-                fg_color="white",
-                hover_color="#ECECEC"
-            )
-        
-    game.turn = "X"
-    game.end_game = False
-        
-    interface.turn_message.configure(text="Vez de jogador X")
-    print("Jogo reiniciado!")
-
-def restart_button(
-        game,
-        interface
-    ):
-    font = ctk.CTkFont(
-        family="Segoe UI Variable Display", 
-        size=28,
-        weight="bold"
-    )
-
-    button = ctk.CTkButton(
-        interface.restart_frame,
-        state="disabled",
-        text="Reiniciar Jogo",
-        text_color="#060606",
-        font=font,
-        border_width=3,
-        border_color="#060606",
-        fg_color="#6A6868",
-        hover_color="#6A6868",
-        width=210,
-        height=50,
-        command=lambda:restart_game(
-            game=game,
-            interface=interface
-        )
-    )
-    button.pack()
-
-    return button
-
 def tic_tac_toe_interface():
     interface = TicTacToeInterface()
     interface.window.title("Jogo da Velha")
@@ -109,10 +49,7 @@ def tic_tac_toe_interface():
         anchor="center"
     )
     
-    interface.restart_button = restart_button(
-        game,
-        interface
-    )
+    interface.restart_button = interface.create_restart_button(game)
 
     interface.create_button_array(3, game)
 
