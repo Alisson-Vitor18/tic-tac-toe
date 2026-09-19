@@ -98,7 +98,7 @@ class TicTacToeInterface:
             hover_color="#6A6868",
             width=210,
             height=50,
-            command=lambda:self.restart_game()
+            command=self.restart_game
         )   
         button.pack()
 
