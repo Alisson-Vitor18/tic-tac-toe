@@ -49,9 +49,9 @@ def tic_tac_toe_interface():
         anchor="center"
     )
     
-    interface.restart_button = interface.create_restart_button(game)
+    interface.restart_button = interface.create_restart_button()
 
-    interface.create_button_array(3, game)
+    interface.create_button_array(3)
 
     interface.window.mainloop()
 

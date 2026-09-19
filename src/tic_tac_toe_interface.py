@@ -2,6 +2,8 @@ import customtkinter as ctk
 import pygame
 import game as game_logic
 from sound import SOUNDS_DIR
+from tic_tac_toe import TicTacToe 
+
 pygame.mixer.init()
 
 click_sound = pygame.mixer.Sound(
@@ -22,6 +24,7 @@ class TicTacToeInterface:
         self.window = None
 
         self.create_window()
+        self.game = TicTacToe()
 
         self.frame = None
         self.restart_frame = None
@@ -52,7 +55,7 @@ class TicTacToeInterface:
 
         return f"{self.width}x{self.height}+{x}+{y}"
 
-    def restart_game(self, game):
+    def restart_game(self):
         click_sound.play()
         init_sound.play()
 
@@ -64,19 +67,19 @@ class TicTacToeInterface:
 
         for row in range(3):
             for column in range(3):
-                game.board[row][column]=""
+                self.game.board[row][column]=""
                 self.buttons[row][column].configure(
                     text="",
                     fg_color="white",
                     hover_color="#ECECEC"
                 )
-        game.turn="X"
-        game.end_game=False
+        self.game.turn="X"
+        self.game.end_game=False
 
         self.turn_message.configure(text="Vez de jogador X")
         print("Jogo reiniciado")
 
-    def create_restart_button(self, game):
+    def create_restart_button(self):
         font = ctk.CTkFont(
             family="Segoe UI Variable Display",
             size=28,
@@ -95,27 +98,27 @@ class TicTacToeInterface:
             hover_color="#6A6868",
             width=210,
             height=50,
-            command=lambda:self.restart_game(game=game)
+            command=lambda:self.restart_game()
         )   
         button.pack()
 
         return button
 
-    def button_click(self, button, row, column, game):
-        if game.end_game:
+    def button_click(self, button, row, column):
+        if self.game.end_game:
             return
 
-        if game_logic.valid_move(game.board, row, column):
+        if game_logic.valid_move(self.game.board, row, column):
             click_sound.play()
             button.configure(
                 fg_color= "#E4E4E4",
-                text = game.turn
+                text = self.game.turn
             )
 
-            game.board[row][column] = game.turn
-            print(f"Jogador {game.turn} escolheu a casa {(row, column)}")
+            self.game.board[row][column] = self.game.turn
+            print(f"Jogador {self.game.turn} escolheu a casa {(row, column)}")
 
-            result, winning_cells = game_logic.check_win(game.board)
+            result, winning_cells = game_logic.check_win(self.game.board)
 
             if result is not None:
                 print(f"\033[30;47mFim de jogo. jogador {result} venceu!\033[0m")
@@ -125,7 +128,7 @@ class TicTacToeInterface:
                         fg_color="#B0CEB1",
                         hover_color="#C6E0C7"
                     )
-                game.end_game = True
+                self.game.end_game = True
                 self.restart_button.configure(
                     state="normal",
                     fg_color="#B0CEB1",
@@ -133,10 +136,10 @@ class TicTacToeInterface:
                 )
                 return
 
-            if game_logic.full_board(game.board):
+            if game_logic.full_board(self.game.board):
                 print("Fim de jogo. Empate!")
                 self.turn_message.configure(text=f"Empate!")
-                game.end_game = True
+                self.game.end_game = True
                 self.restart_button.configure(
                     state="normal",
                     fg_color="#B0CEB1",
@@ -144,14 +147,14 @@ class TicTacToeInterface:
                 )
                 return
 
-            game.swap_turns()
+            self.game.swap_turns()
             self.turn_message.configure(
-                text=f"Vez de jogador {game.turn}"
+                text=f"Vez de jogador {self.game.turn}"
             )
         else:
             print("Essa casa já foi escolhida!")
     
-    def create_button(self, row, column, game):
+    def create_button(self, row, column):
         font = ctk.CTkFont(
             family="Segoe UI Variable Display",
             size=30,
@@ -170,16 +173,15 @@ class TicTacToeInterface:
             hover_color="#ECECEC",
             command=lambda:self.button_click(button=button,
                                         row = row,
-                                        column = column,
-                                        game = game
+                                        column = column
                                         )
         )
         return button
 
 
-    def create_button_array(self, number, game):
+    def create_button_array(self, number):
         for row in range(number):
             for column in range(number):
-                button = self.create_button(row, column, game)
+                button = self.create_button(row, column)
                 button.grid(row=row, column=column)
                 self.buttons[row][column] = button
