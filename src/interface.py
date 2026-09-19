@@ -1,4 +1,3 @@
-import customtkinter as ctk
 from tic_tac_toe_interface import TicTacToeInterface
 
 def tic_tac_toe_interface():
