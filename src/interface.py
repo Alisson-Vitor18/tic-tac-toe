@@ -1,35 +1,12 @@
 import customtkinter as ctk
 from tic_tac_toe_interface import TicTacToeInterface
-from tic_tac_toe import TicTacToe
-
-def create_text(
-        window, 
-        message, 
-        size
-    ):
-    font = ctk.CTkFont(
-        family="Segoe UI Variable Display",
-        size=size,
-        weight="bold"
-    )
-
-    text = ctk.CTkLabel(
-        window, 
-        text=message, 
-        font=font,
-    )
-
-    return text
 
 def tic_tac_toe_interface():
     interface = TicTacToeInterface()
     interface.window.title("Jogo da Velha")
 
-    interface.title_game = create_text(interface.window, "Jogo da Velha", 40)
-    interface.title_game.pack(pady=30)
-
-    interface.turn_message = create_text(interface.window, "Vez de jogador X", 28)
-    interface.turn_message.pack()
+    interface.create_title_game()
+    interface.create_turn_message_text()
 
     interface.frame = ctk.CTkFrame(
         interface.window
@@ -40,7 +17,6 @@ def tic_tac_toe_interface():
         anchor="center"
     )
 
-    game = TicTacToe()
     interface.restart_frame = ctk.CTkFrame(interface.window)
     
     interface.restart_frame.place(
@@ -49,7 +25,7 @@ def tic_tac_toe_interface():
         anchor="center"
     )
     
-    interface.restart_button = interface.create_restart_button()
+    interface.create_restart_button()
 
     interface.create_button_array(3)
 

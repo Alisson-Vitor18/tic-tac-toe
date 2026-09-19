@@ -37,6 +37,35 @@ class TicTacToeInterface:
             [None,None, None],
         ]
 
+    def create_text(self, message, size, pady=0):
+        font = ctk.CTkFont(
+            family="Segoe UI Variable Display",
+            size=size,
+            weight="bold"
+        )
+
+        text = ctk.CTkLabel(
+            self.window,
+            text=message,
+            font=font
+        )
+        text.pack(pady=pady)
+
+        return text
+
+    def create_turn_message_text(self):   
+        self.turn_message = self.create_text(
+            "Vez de jogador X",
+            28
+        )
+
+    def create_title_game(self):
+        self.title_game = self.create_text(
+            "Jogo da Velha",
+            40,
+            pady=30
+        )
+
     def create_window(self):
         self.window = ctk.CTk()
         self.window.geometry(
@@ -86,7 +115,7 @@ class TicTacToeInterface:
             weight="bold"
         )
 
-        button = ctk.CTkButton(
+        self.restart_button = ctk.CTkButton(
             self.restart_frame,
             state="disabled",
             text="Reiniciar Jogo",
@@ -100,9 +129,7 @@ class TicTacToeInterface:
             height=50,
             command=self.restart_game
         )   
-        button.pack()
-
-        return button
+        self.restart_button.pack()
 
     def button_click(self, button, row, column):
         if self.game.end_game:
