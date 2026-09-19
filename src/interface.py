@@ -8,22 +8,8 @@ def tic_tac_toe_interface():
     interface.create_title_game()
     interface.create_turn_message_text()
 
-    interface.frame = ctk.CTkFrame(
-        interface.window
-    )
-    interface.frame.place(
-        relx=0.5,
-        rely=0.5,
-        anchor="center"
-    )
-
-    interface.restart_frame = ctk.CTkFrame(interface.window)
-    
-    interface.restart_frame.place(
-        relx=0.5,
-        rely=0.75,
-        anchor="center"
-    )
+    interface.create_game_frame()
+    interface.create_restart_frame()
     
     interface.create_restart_button()
 

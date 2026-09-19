@@ -37,6 +37,27 @@ class TicTacToeInterface:
             [None,None, None],
         ]
 
+    def create_game_frame(self):
+        self.frame = ctk.CTkFrame(
+            self.window
+        )
+
+        self.frame.place(
+            relx=0.5,
+            rely=0.5,
+            anchor="center"
+        )
+
+    def create_restart_frame(self):
+        self.restart_frame = ctk.CTkFrame(
+            self.window
+        )
+        
+        self.restart_frame.place(
+            relx=0.5,
+            rely=0.75,
+            anchor="center"
+        )
     def create_text(self, message, size, pady=0):
         font = ctk.CTkFont(
             family="Segoe UI Variable Display",
